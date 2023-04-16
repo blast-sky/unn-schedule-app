@@ -41,6 +41,7 @@ import com.astrog.sheduleapp.domain.model.SubjectDto
 import com.astrog.sheduleapp.presentation.ScheduleAppBar
 import com.astrog.sheduleapp.presentation.schedule.ScheduleState
 import com.astrog.sheduleapp.presentation.schedule.ScheduleViewModel
+import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
 import com.astrog.sheduleapp.presentation.settingsdialog.compose.SettingsDialog
 import com.astrog.sheduleapp.util.initPage
 import kotlinx.coroutines.delay
@@ -127,8 +128,10 @@ fun ScheduleViewPager(viewModel: ScheduleViewModel = hiltViewModel()) {
 
 
 @Composable
-fun ShowSchedule(subjects: List<SubjectDto>) {
-    var currentSubjectsList by remember { mutableStateOf<List<SubjectDto>>(listOf()) }
+fun ShowSchedule(subjects: List<SubjectPresentation>) {
+    var currentSubjectsList by remember {
+        mutableStateOf<List<SubjectPresentation>>(listOf())
+    }
     LaunchedEffect(key1 = LocalContext.current) {
         for (subject in subjects) {
             currentSubjectsList = currentSubjectsList + subject

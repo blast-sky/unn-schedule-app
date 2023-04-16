@@ -7,23 +7,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astrog.sheduleapp.domain.ScheduleLoader
+import com.astrog.sheduleapp.domain.model.SubjectDto
 import com.astrog.sheduleapp.internal.SchedulePreferences
-import com.astrog.sheduleapp.util.AUDITORIUM
-import com.astrog.sheduleapp.util.GROUP
-import com.astrog.sheduleapp.util.LECTURER
-import com.astrog.sheduleapp.util.STUDENT
+import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
 import com.astrog.sheduleapp.util.dateFormatterWithDayOfWeek
 import com.astrog.sheduleapp.util.initPage
+import com.astrog.sheduleapp.util.isSubjectActive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
-import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.format.TextStyle
-import java.util.Locale
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 typealias ScheduleStateMap = Map<Int, ScheduleState>
@@ -57,7 +52,10 @@ class ScheduleViewModel @Inject constructor(
         try {
             val subjects = scheduleLoader.loadSchedule(date)
             Log.i(TAG, "page $page is just loaded")
-            state.value += page to ScheduleState.Ready(subjects)
+            val subjectPresentations = subjects.map { subject ->
+                SubjectPresentation(subject, isSubjectActive(subject))
+            }
+            state.value += page to ScheduleState.Ready(subjectPresentations)
         } catch (ex: RuntimeException) {
             println(ex.stackTraceToString())
             Log.i(TAG, "page $page is failed to load")
