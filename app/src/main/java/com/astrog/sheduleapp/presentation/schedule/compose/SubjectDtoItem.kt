@@ -1,6 +1,7 @@
 package com.astrog.sheduleapp.presentation.schedule.compose
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +23,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.astrog.sheduleapp.domain.model.SubjectDto
+import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
+import com.astrog.sheduleapp.presentation.ui.theme.Lime
 
 @Composable
-fun SubjectDtoItem(subject: SubjectDto, modifier: Modifier = Modifier) {
+fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier = Modifier) {
+    val subject = subjectPresentation.subjectDto
+    val border = if (subjectPresentation.isActive)
+        BorderStroke(1.dp, MaterialTheme.colors.onSurface)
+    else
+        null
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,19 +46,21 @@ fun SubjectDtoItem(subject: SubjectDto, modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(15.dp),
         backgroundColor = MaterialTheme.colors.surface,
         contentColor = MaterialTheme.colors.onSurface,
+        border = border,
     ) {
-        Column {
+        var needToShowKindOfWork by remember { mutableStateOf(false) }
+        Column(
+            modifier = Modifier.clickable { needToShowKindOfWork = !needToShowKindOfWork },
+        ) {
             val headerColor = if (subject.kindOfWork == "Лекция") {
                 MaterialTheme.colors.primary
             } else {
                 MaterialTheme.colors.secondary
             }
-            var needToShowKindOfWork by remember { mutableStateOf(false) }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(headerColor)
-                    .clickable { needToShowKindOfWork = !needToShowKindOfWork }
                     .animateContentSize(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
