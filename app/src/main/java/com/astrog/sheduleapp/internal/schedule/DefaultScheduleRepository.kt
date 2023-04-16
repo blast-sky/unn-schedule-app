@@ -2,6 +2,7 @@ package com.astrog.sheduleapp.internal.schedule
 
 import android.annotation.SuppressLint
 import com.astrog.sheduleapp.domain.ScheduleRepository
+import com.astrog.sheduleapp.domain.model.SubjectDto
 import com.astrog.sheduleapp.internal.RuzapiClient
 import com.astrog.sheduleapp.util.AUDITORIUM
 import com.astrog.sheduleapp.util.GROUP

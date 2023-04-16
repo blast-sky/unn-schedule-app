@@ -1,6 +1,6 @@
 package com.astrog.sheduleapp.internal
 
-import com.astrog.sheduleapp.internal.schedule.SubjectDto
+import com.astrog.sheduleapp.domain.model.SubjectDto
 import com.astrog.sheduleapp.internal.search.SearchResultDto
 import retrofit2.http.GET
 import retrofit2.http.POST

@@ -1,6 +1,6 @@
 package com.astrog.sheduleapp.presentation.schedule
 
-import com.astrog.sheduleapp.internal.schedule.SubjectDto
+import com.astrog.sheduleapp.domain.model.SubjectDto
 
 sealed class ScheduleState {
 

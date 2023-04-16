@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.internal.schedule
+package com.astrog.sheduleapp.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -14,4 +14,5 @@ data class SubjectDto(
     val building: String,
     val lecturer: String,
     val kindOfWork: String,
+    val stream: String?,
 ) : Parcelable

@@ -1,6 +1,6 @@
 package com.astrog.sheduleapp.domain
 
-import com.astrog.sheduleapp.internal.schedule.SubjectDto
+import com.astrog.sheduleapp.domain.model.SubjectDto
 import java.time.LocalDate
 
 interface ScheduleRepository {
