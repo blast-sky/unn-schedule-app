@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.internal.search
+package com.astrog.sheduleapp.domain.model
 
 data class SearchResultDto(
     val id: Long,

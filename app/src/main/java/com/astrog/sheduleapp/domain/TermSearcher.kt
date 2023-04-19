@@ -1,6 +1,6 @@
 package com.astrog.sheduleapp.domain
 
-import com.astrog.sheduleapp.internal.search.SearchResultDto
+import com.astrog.sheduleapp.domain.model.SearchResultDto
 import javax.inject.Inject
 
 class TermSearcher @Inject constructor(

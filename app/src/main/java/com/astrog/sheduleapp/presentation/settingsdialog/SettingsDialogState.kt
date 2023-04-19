@@ -1,6 +1,6 @@
 package com.astrog.sheduleapp.presentation.settingsdialog
 
-import com.astrog.sheduleapp.internal.search.SearchResultDto
+import com.astrog.sheduleapp.domain.model.SearchResultDto
 
 data class SettingsDialogState(
     val activeType: String,

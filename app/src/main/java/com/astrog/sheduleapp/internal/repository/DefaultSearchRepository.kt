@@ -1,6 +1,7 @@
-package com.astrog.sheduleapp.internal.search
+package com.astrog.sheduleapp.internal.repository
 
 import com.astrog.sheduleapp.domain.SearchRepository
+import com.astrog.sheduleapp.domain.model.SearchResultDto
 import com.astrog.sheduleapp.internal.RuzapiClient
 import com.astrog.sheduleapp.util.AUDITORIUM
 import com.astrog.sheduleapp.util.GROUP

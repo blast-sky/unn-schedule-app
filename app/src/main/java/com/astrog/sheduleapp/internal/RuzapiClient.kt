@@ -1,7 +1,7 @@
 package com.astrog.sheduleapp.internal
 
 import com.astrog.sheduleapp.domain.model.SubjectDto
-import com.astrog.sheduleapp.internal.search.SearchResultDto
+import com.astrog.sheduleapp.domain.model.SearchResultDto
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path

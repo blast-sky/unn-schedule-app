@@ -1,7 +1,6 @@
 package com.astrog.sheduleapp.presentation.settingsdialog.compose
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
@@ -23,8 +22,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.unit.dp
-import com.astrog.sheduleapp.internal.search.SearchResultDto
+import com.astrog.sheduleapp.domain.model.SearchResultDto
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

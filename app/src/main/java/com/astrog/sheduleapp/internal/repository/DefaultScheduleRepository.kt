@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.internal.schedule
+package com.astrog.sheduleapp.internal.repository
 
 import android.annotation.SuppressLint
 import com.astrog.sheduleapp.domain.ScheduleRepository

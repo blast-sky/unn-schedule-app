@@ -6,8 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.astrog.sheduleapp.domain.ScheduleLoader
-import com.astrog.sheduleapp.domain.model.SubjectDto
+import com.astrog.sheduleapp.internal.ScheduleLoader
 import com.astrog.sheduleapp.internal.SchedulePreferences
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
 import com.astrog.sheduleapp.util.dateFormatterWithDayOfWeek
@@ -17,8 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 typealias ScheduleStateMap = Map<Int, ScheduleState>

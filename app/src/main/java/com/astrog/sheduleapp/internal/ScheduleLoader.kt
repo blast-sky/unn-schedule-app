@@ -1,6 +1,6 @@
-package com.astrog.sheduleapp.domain
+package com.astrog.sheduleapp.internal
 
-import com.astrog.sheduleapp.internal.SchedulePreferences
+import com.astrog.sheduleapp.domain.ScheduleRepository
 import com.astrog.sheduleapp.domain.model.SubjectDto
 import java.time.LocalDate
 import javax.inject.Inject
