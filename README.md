@@ -42,7 +42,7 @@ Contributions to the Unn Schedule App are welcome! You can contribute by:
 5. Create a new pull request to the original repository.
 
 ## Screenshots
-<img src="../../assets/screenshots/start.jpg?raw=true" height="400">
+<img src="../assets/screenshots/start.jpg?raw=true" height="400">
 
 ## License
 This project is licensed under the Apache License 2.0.
