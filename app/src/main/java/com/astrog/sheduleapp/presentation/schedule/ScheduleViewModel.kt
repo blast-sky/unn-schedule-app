@@ -15,6 +15,7 @@ import com.astrog.sheduleapp.util.isSubjectActive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -31,10 +32,6 @@ class ScheduleViewModel @Inject constructor(
 
     val state: MutableState<ScheduleStateMap> = mutableStateOf(mapOf())
 
-    init {
-        removeAllAndLoadInitPage()
-    }
-
     private val exceptionHandler = CoroutineExceptionHandler { _, ex ->
         Log.e(TAG, ex.stackTraceToString())
         val statusMap = state.value
@@ -45,7 +42,11 @@ class ScheduleViewModel @Inject constructor(
         }
     }
 
-    private fun loadSchedule(date: LocalDate, page: Int) = viewModelScope.launch {
+    init {
+        removeAllAndLoadInitPage()
+    }
+
+    private fun loadSchedule(date: LocalDate, page: Int) = viewModelScope.launch(exceptionHandler) {
         try {
             val subjects = scheduleLoader.loadSchedule(date)
             Log.i(TAG, "page $page is just loaded")

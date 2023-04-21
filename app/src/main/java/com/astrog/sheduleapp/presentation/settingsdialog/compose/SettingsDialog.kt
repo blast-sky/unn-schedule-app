@@ -75,7 +75,9 @@ fun SettingsDialog(
                     selectedItem = selectedTerm,
                     onSelectedItemChange = { selectedTerm = it },
                 )
-
+                if(state.networkError) {
+                    NetworkErrorLabel()
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 Row(
                     modifier = Modifier.fillMaxWidth(),

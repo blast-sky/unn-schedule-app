@@ -7,4 +7,5 @@ data class SettingsDialogState(
     val activeId: Long,
     val activeTerm: String,
     val suggestedResults: List<SearchResultDto>,
+    val networkError: Boolean = false,
 )
