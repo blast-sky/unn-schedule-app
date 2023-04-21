@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.astrog.sheduleapp.presentation.settingsdialog.SettingsDialogViewModel
+import com.astrog.sheduleapp.util.roundRadius
 
 @Composable
 fun SettingsDialog(
@@ -46,7 +48,8 @@ fun SettingsDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .animateContentSize()
+                .animateContentSize(),
+            shape = RoundedCornerShape(roundRadius),
         ) {
             var currentType by remember { mutableStateOf(state.activeType) }
             var currentId by remember { mutableStateOf(state.activeId.toString()) }
@@ -75,7 +78,7 @@ fun SettingsDialog(
                     selectedItem = selectedTerm,
                     onSelectedItemChange = { selectedTerm = it },
                 )
-                if(state.networkError) {
+                if (state.networkError) {
                     NetworkErrorLabel()
                 }
                 Spacer(modifier = Modifier.weight(1f))

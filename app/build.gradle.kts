@@ -89,4 +89,8 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+
+    val datePickerVersion = "1.1.1"
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:$datePickerVersion")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:$datePickerVersion")
 }

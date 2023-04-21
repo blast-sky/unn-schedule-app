@@ -12,6 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
@@ -29,6 +30,7 @@ fun ScheduleAppBar(
     title: String,
     onMenuClick: () -> Unit,
     onRefreshClick: () -> Unit,
+    onCalendarClick: () -> Unit,
     expanded: Boolean,
 ) {
     var refreshAngle by remember { mutableStateOf(0f) }
@@ -40,6 +42,13 @@ fun ScheduleAppBar(
             }
         },
         actions = {
+            IconButton(onClick = onCalendarClick) {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = "Calendar",
+                    tint = MaterialTheme.colors.onSurface,
+                )
+            }
             IconButton(onClick = {
                 refreshAngle += 360f
                 onRefreshClick.invoke()
