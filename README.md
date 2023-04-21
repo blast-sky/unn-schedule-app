@@ -1,3 +1,6 @@
+[![Latest release](https://img.shields.io/github/release/blast-sky/unn-schedule-app.svg)](https://github.com/blast-sky/unn-schedule-app/releases/latest)
+[![Unit tests](https://github.com/blast-sky/unn-schedule-app/workflows/Android%20Unit%20Tests/badge.svg?branch=main)](https://github.com/blast-sky/unn-schedule-app/actions)
+
 # Unn Schedule Application
 
 This is an Android application that helps students to view their university schedules.<br/>
