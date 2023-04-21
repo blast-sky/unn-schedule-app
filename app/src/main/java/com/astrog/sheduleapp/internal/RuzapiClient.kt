@@ -19,7 +19,7 @@ interface RuzapiClient {
         @Query("lng") lng: Int = 1,
     ): List<SubjectDto>
 
-    @GET("search?term=%D0%A1%D1%82%D1%80%D0%BE%D0%B3%D0%B0&type=student")
+    @GET("search")
     suspend fun searchByTerm(
         @Query("term") term: String,
         @Query("type") type: String,

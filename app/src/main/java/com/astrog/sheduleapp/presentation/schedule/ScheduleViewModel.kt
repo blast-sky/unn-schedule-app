@@ -15,8 +15,8 @@ import com.astrog.sheduleapp.util.isSubjectActive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import java.time.LocalDate
+import java.time.Period
 import javax.inject.Inject
 
 typealias ScheduleStateMap = Map<Int, ScheduleState>
@@ -84,6 +84,11 @@ class ScheduleViewModel @Inject constructor(
     fun removeAllAndLoadInitPage() {
         state.value = mutableMapOf()
         loadSchedule(initPage)
+    }
+
+    fun dateToPage(date: LocalDate): Int {
+        val now = LocalDate.now()
+        return initPage + Period.between(now, date).days
     }
 
     val isIdAbsent: Boolean

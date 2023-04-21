@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,29 +24,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.astrog.sheduleapp.domain.model.SubjectDto
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
-import com.astrog.sheduleapp.presentation.ui.theme.Lime
+import com.astrog.sheduleapp.util.borderStrokeWidth
+import com.astrog.sheduleapp.util.defaultPadding
+import com.astrog.sheduleapp.util.roundRadius
 
 @Composable
 fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier = Modifier) {
     val subject = subjectPresentation.subjectDto
-    val border = if (subjectPresentation.isActive)
-        BorderStroke(1.dp, MaterialTheme.colors.onSurface)
-    else
-        null
+    val border = BorderStroke(borderStrokeWidth, colors.onSurface)
+        .takeIf { subjectPresentation.isActive }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 40.dp)
             .padding(defaultPadding)
             .then(modifier),
-        shape = RoundedCornerShape(15.dp),
-        backgroundColor = MaterialTheme.colors.surface,
-        contentColor = MaterialTheme.colors.onSurface,
+        shape = RoundedCornerShape(roundRadius),
+        backgroundColor = colors.surface,
+        contentColor = colors.onSurface,
         border = border,
     ) {
         var needToShowKindOfWork by remember { mutableStateOf(false) }
@@ -53,9 +53,9 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
             modifier = Modifier.clickable { needToShowKindOfWork = !needToShowKindOfWork },
         ) {
             val headerColor = if (subject.kindOfWork == "Лекция") {
-                MaterialTheme.colors.primary
+                colors.primary
             } else {
-                MaterialTheme.colors.secondary
+                colors.secondary
             }
             Row(
                 modifier = Modifier
@@ -73,7 +73,7 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
                     Text(
                         text = subject.discipline,
                         textAlign = TextAlign.Start,
-                        color = MaterialTheme.colors.onPrimary,
+                        color = colors.onPrimary,
                         softWrap = true,
                     )
                     if (needToShowKindOfWork) {
@@ -81,7 +81,7 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
                         Text(
                             text = subject.kindOfWork,
                             textAlign = TextAlign.Start,
-                            color = MaterialTheme.colors.onPrimary,
+                            color = colors.onPrimary,
                             softWrap = true,
                             style = MaterialTheme.typography.caption,
                         )
@@ -89,7 +89,7 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
                             Text(
                                 text = stream,
                                 textAlign = TextAlign.Start,
-                                color = MaterialTheme.colors.onPrimary,
+                                color = colors.onPrimary,
                                 softWrap = true,
                                 style = MaterialTheme.typography.caption,
                             )
@@ -103,7 +103,7 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
                         .defaultMinSize(minWidth = 40.dp),
                     text = "${subject.beginLesson} - ${subject.endLesson}",
                     textAlign = TextAlign.End,
-                    color = MaterialTheme.colors.onPrimary,
+                    color = colors.onPrimary,
                     softWrap = false,
                 )
             }

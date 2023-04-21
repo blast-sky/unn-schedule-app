@@ -15,8 +15,8 @@ android {
         applicationId = "com.astrog.sheduleapp"
         minSdk = 23
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -31,6 +31,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
         }
     }
     compileOptions {
@@ -89,4 +90,8 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+
+    val datePickerVersion = "1.1.1"
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:$datePickerVersion")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:$datePickerVersion")
 }

@@ -3,10 +3,14 @@
 package com.astrog.sheduleapp.presentation.schedule.compose
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,17 +41,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.astrog.sheduleapp.domain.model.SubjectDto
 import com.astrog.sheduleapp.presentation.ScheduleAppBar
 import com.astrog.sheduleapp.presentation.schedule.ScheduleState
 import com.astrog.sheduleapp.presentation.schedule.ScheduleViewModel
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
 import com.astrog.sheduleapp.presentation.settingsdialog.compose.SettingsDialog
+import com.astrog.sheduleapp.util.defaultPadding
 import com.astrog.sheduleapp.util.initPage
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-val defaultPadding = 10.dp
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -56,6 +63,8 @@ fun ScheduleViewPager(viewModel: ScheduleViewModel = hiltViewModel()) {
     val pagerState = rememberPagerState(initPage)
     val loadedPages = remember { mutableSetOf<Int>() }
     var dialogShown by remember { mutableStateOf(viewModel.isIdAbsent) }
+
+    val calendarState = rememberUseCaseState(visible = false)
 
     fun update() {
         viewModel.removeAllAndLoadInitPage()
@@ -68,10 +77,12 @@ fun ScheduleViewPager(viewModel: ScheduleViewModel = hiltViewModel()) {
                 title = "Расписание занятий",
                 onMenuClick = { dialogShown = !dialogShown },
                 onRefreshClick = ::update,
+                onCalendarClick = { calendarState.show() },
                 expanded = dialogShown,
             )
         },
     ) {
+        val pagerScrollCoroutineScope = rememberCoroutineScope()
         Column(modifier = Modifier.fillMaxSize()) {
             HorizontalPager(
                 pageCount = Int.MAX_VALUE,
@@ -92,40 +103,64 @@ fun ScheduleViewPager(viewModel: ScheduleViewModel = hiltViewModel()) {
                     }
                     when (val cashedState = state[currentPage]) {
                         ScheduleState.Loading -> ShowLoading()
-                        is ScheduleState.Ready -> ShowSchedule(cashedState.subjects)
+                        is ScheduleState.Ready -> ShowSchedule(subjects = cashedState.subjects)
                         is ScheduleState.Error -> ShowError(message = cashedState.error)
                         null -> Unit
                     }
                 }
             }
-            val coroutineScope = rememberCoroutineScope()
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(page = initPage)
-                    }
-                },
+
+            AnimatedVisibility(
+                visible = pagerState.currentPage != initPage,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(defaultPadding),
             ) {
-                Text(
-                    text = "Текущий день",
-                    color = MaterialTheme.colors.onPrimary
-                )
+                RollbackButton {
+                    pagerScrollCoroutineScope.launch {
+                        pagerState.animateScrollToPage(page = initPage)
+                    }
+                }
             }
         }
 
+        CalendarDialog(
+            state = calendarState,
+            config = CalendarConfig(
+                yearSelection = true,
+                monthSelection = true,
+                style = CalendarStyle.MONTH,
+            ),
+            selection = CalendarSelection.Date { date ->
+                pagerScrollCoroutineScope.launch {
+                    pagerState.animateScrollToPage(viewModel.dateToPage(date))
+                }
+            },
+        )
+
         if (dialogShown) {
-            SettingsDialog(onDismiss = { needToUpdate ->
-                if (needToUpdate)
-                    update()
-                dialogShown = false
-            })
+            SettingsDialog(
+                onDismiss = { needToUpdate ->
+                    if (needToUpdate)
+                        update()
+                    dialogShown = false
+                }
+            )
         }
     }
 }
 
+@Composable
+fun RollbackButton(onClick: () -> Unit) {
+    Button(
+        onClick = { onClick.invoke() },
+    ) {
+        Text(
+            text = "Вернуться на текущий день",
+            color = MaterialTheme.colors.onPrimary,
+        )
+    }
+}
 
 @Composable
 fun ShowSchedule(subjects: List<SubjectPresentation>) {
