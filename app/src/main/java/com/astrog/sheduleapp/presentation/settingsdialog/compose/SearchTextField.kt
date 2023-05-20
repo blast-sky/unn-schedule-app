@@ -1,6 +1,7 @@
 package com.astrog.sheduleapp.presentation.settingsdialog.compose
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
@@ -78,7 +79,7 @@ fun SearchTextField(
             expanded = if (suggestedResults.isEmpty()) false else expanded,
             onDismissRequest = { expanded = false },
         ) {
-            for (result in suggestedResults) {
+            suggestedResults.forEachIndexed { index, result ->
                 DropdownMenuItem(onClick = {
                     onSelectedItemChange.invoke(result.label)
                     setActiveId.invoke(result.id)
@@ -87,6 +88,9 @@ fun SearchTextField(
                 }) {
                     Text(text = "${result.label}\n${result.description}")
                 }
+
+                if(index != suggestedResults.lastIndex)
+                    Divider()
             }
         }
     }

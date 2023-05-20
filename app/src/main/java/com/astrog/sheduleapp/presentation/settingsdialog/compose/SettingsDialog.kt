@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,9 +52,9 @@ fun SettingsDialog(
                 .animateContentSize(),
             shape = RoundedCornerShape(roundRadius),
         ) {
-            var currentType by remember { mutableStateOf(state.activeType) }
-            var currentId by remember { mutableStateOf(state.activeId.toString()) }
-            var selectedTerm by remember { mutableStateOf(state.activeTerm) }
+            var currentType by rememberSaveable { mutableStateOf(state.activeType) }
+            var currentId by rememberSaveable { mutableStateOf(state.activeId.toString()) }
+            var selectedTerm by rememberSaveable { mutableStateOf(state.activeTerm) }
             Column(
                 modifier = Modifier
                     .height(height = 500.dp)

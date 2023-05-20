@@ -61,12 +61,9 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    val retrofitVersion = "2.9.0"
     val hiltNavigationComposeVersion = "1.0.0"
     val hiltVersion = "2.45"
     val navVersion = "2.5.1"
-
-
 
     implementation("androidx.core:core-ktx")
     implementation("androidx.compose.ui:ui")

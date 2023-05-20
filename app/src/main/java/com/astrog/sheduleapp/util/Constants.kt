@@ -2,7 +2,7 @@ package com.astrog.sheduleapp.util
 
 import androidx.compose.ui.unit.dp
 
-const val initPage = Int.MAX_VALUE / 2
+const val initialPage = Int.MAX_VALUE / 2
 
 const val STUDENT = "student"
 const val GROUP = "group"

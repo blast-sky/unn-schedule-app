@@ -1,5 +1,6 @@
 package com.astrog.sheduleapp.presentation.schedule.compose
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -25,11 +27,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.astrog.sheduleapp.domain.model.SubjectDto
+import com.astrog.sheduleapp.presentation.schedule.ScheduleState
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
 import com.astrog.sheduleapp.util.borderStrokeWidth
 import com.astrog.sheduleapp.util.defaultPadding
 import com.astrog.sheduleapp.util.roundRadius
+import java.util.Calendar
 
 @Composable
 fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier = Modifier) {
@@ -128,4 +134,29 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
             )
         }
     }
+}
+
+@Preview(name = "light", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "night", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewSubjectDtoItem() {
+    SubjectDtoItem(
+        SubjectPresentation(
+            SubjectDto(
+                "",
+                Calendar.MONDAY.toLong(),
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+            ),
+            true,
+        ),
+        Modifier
+    )
 }
