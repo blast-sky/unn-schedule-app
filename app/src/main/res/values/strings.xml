@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">ScheduleApp</string>
+    <string name="app_name">Расписание</string>
+    <string name="app_bar_title">Расписание занятий</string>
+    <string name="failed_to_load_data">Не удалось загрузить данные.</string>
+    <string name="cancel">Отмена</string>
+    <string name="submit">Подтвердить</string>
+    <string name="start_to_write">Начните писать...</string>
+    <string name="search">Поиск</string>
 </resources>

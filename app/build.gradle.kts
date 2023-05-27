@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
 
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.astrog.sheduleapp"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 33
         versionCode = 2
         versionName = "1.0.1"
@@ -35,50 +35,61 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.2"
+        kotlinCompilerExtensionVersion = androidx.versions.compose.compiler.get()
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    namespace = "com.astrog.sheduleapp"
 }
 
 dependencies {
 
-    val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
+    val composeBom = platform("androidx.compose:compose-bom:2023.04.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    val retrofitVersion = "2.9.0"
     val hiltNavigationComposeVersion = "1.0.0"
     val hiltVersion = "2.45"
     val navVersion = "2.5.1"
 
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.compose.ui:ui:1.4.0-rc01")
+    implementation(stack.kotlin.logging)
+
+    implementation(stack.okhttp.loggingInterceptor)
+
+    implementation("androidx.core:core-ktx")
+    implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material:material")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
-    implementation("androidx.activity:activity-compose:1.6.1")
-    testImplementation("junit:junit:4.13.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx")
+    implementation("androidx.activity:activity-compose")
+
+    implementation(stack.accompanist.systemuicontroller)
+
+    implementation(androidx.room)
+    implementation(androidx.room.runtime)
+    kapt(androidx.room.compiler)
+
+    testImplementation(stack.junit4)
+
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
@@ -88,8 +99,8 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
 
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation(stack.retrofit)
+    implementation(stack.retrofit.converter.gson)
 
     val datePickerVersion = "1.1.1"
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:$datePickerVersion")

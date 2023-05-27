@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
+import com.astrog.sheduleapp.presentation.ui.theme.onPrimarySurface
 import kotlin.math.abs
 
 @Composable
@@ -46,7 +47,7 @@ fun ScheduleAppBar(
                 Icon(
                     imageVector = Icons.Default.DateRange,
                     contentDescription = "Calendar",
-                    tint = MaterialTheme.colors.onSurface,
+                    tint = MaterialTheme.colors.onPrimarySurface,
                 )
             }
             IconButton(onClick = {
@@ -71,7 +72,7 @@ private fun AnimatedMenuIcon(expanded: Boolean) {
         imageVector = Icons.Filled.Menu,
         contentDescription = "Menu",
         modifier = Modifier.rotate(rotationAngle.value),
-        tint = MaterialTheme.colors.onSurface
+        tint = MaterialTheme.colors.onPrimarySurface,
     )
 }
 
@@ -91,6 +92,6 @@ private fun AnimatedRefreshIcon(refreshAngle: Float) {
         modifier = Modifier
             .rotate(rotation)
             .size((ration * defaultSize).dp),
-        tint = MaterialTheme.colors.onSurface
+        tint = MaterialTheme.colors.onPrimarySurface,
     )
 }

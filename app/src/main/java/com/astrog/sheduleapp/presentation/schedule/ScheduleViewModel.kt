@@ -1,96 +1,91 @@
 package com.astrog.sheduleapp.presentation.schedule
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.astrog.sheduleapp.internal.ScheduleLoader
+import com.astrog.sheduleapp.domain.ScheduleMediator
 import com.astrog.sheduleapp.internal.SchedulePreferences
+import com.astrog.sheduleapp.presentation.schedule.model.Page
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
-import com.astrog.sheduleapp.util.dateFormatterWithDayOfWeek
-import com.astrog.sheduleapp.util.initPage
-import com.astrog.sheduleapp.util.isSubjectActive
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.oshai.KotlinLogging
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.Period
 import javax.inject.Inject
 
-typealias ScheduleStateMap = Map<Int, ScheduleState>
+typealias ScheduleStateMap = Map<Page, ScheduleState>
 
-private val TAG = ScheduleViewModel::class.simpleName
+private val logger = KotlinLogging.logger { }
 
-@SuppressLint("NewApi")
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
-    private val scheduleLoader: ScheduleLoader,
+    private val scheduleMediator: ScheduleMediator,
     private val schedulePreferences: SchedulePreferences,
 ) : ViewModel() {
 
-    val state: MutableState<ScheduleStateMap> = mutableStateOf(mapOf())
+    private val _state: MutableState<ScheduleStateMap> = mutableStateOf(mapOf())
+
+    private var scheduleStateMap by _state
+    val state: State<ScheduleStateMap> = _state
+
+    private val batchSize = 10
 
     private val exceptionHandler = CoroutineExceptionHandler { _, ex ->
-        Log.e(TAG, ex.stackTraceToString())
-        val statusMap = state.value
-        statusMap.forEach { (page, currentState) ->
-            if (currentState is ScheduleState.Loading) {
-                state.value += page to ScheduleState.Error("Не удалось загрузить данные.")
-            }
-        }
+        logger.error { ex.stackTraceToString() }
+        replaceLoadingOnErrorState()
+    }
+
+    private fun replaceLoadingOnErrorState() {
+        val errorStates = scheduleStateMap
+            .filterValues { state -> state is ScheduleState.Loading }
+            .keys
+            .map { page -> page to ScheduleState.Error.LoadError }
+        scheduleStateMap = scheduleStateMap + errorStates
     }
 
     init {
-        removeAllAndLoadInitPage()
+        clearPagesAndLoadInitial()
     }
 
-    private fun loadSchedule(date: LocalDate, page: Int) = viewModelScope.launch(exceptionHandler) {
-        try {
-            val subjects = scheduleLoader.loadSchedule(date)
-            Log.i(TAG, "page $page is just loaded")
-            val subjectPresentations = subjects.map { subject ->
-                SubjectPresentation(subject, isSubjectActive(subject))
-            }
-            state.value += page to ScheduleState.Ready(subjectPresentations)
-        } catch (ex: RuntimeException) {
-            println(ex.stackTraceToString())
-            Log.i(TAG, "page $page is failed to load")
-            state.value += page to ScheduleState.Error("Не удалось загрузить данные.")
+    fun requestScheduleRange(centerPage: Page) {
+        for (offset in (-batchSize / 2)..(batchSize / 2)) {
+            val currentPage = centerPage + offset
+            requestSchedule(currentPage)
         }
     }
 
-    fun pageToDateString(page: Int): String {
-        val now = LocalDate.now()
-        val pageDiff = page - initPage
-        val pageDate = now.plusDays(pageDiff.toLong())
-        return dateFormatterWithDayOfWeek.format(pageDate).replaceFirstChar(Char::titlecaseChar)
-    }
-
-    fun loadSchedule(page: Int) {
-        val diffInDays = page - initPage
-        val neededDate = LocalDate.now().plusDays(diffInDays.toLong())
-        val pageStatuses = state.value
-        Log.i(TAG, "loading $page page")
-        if (pageStatuses.containsKey(page)) {
-            Log.i(TAG, "page $page is already loaded")
+    private fun requestSchedule(page: Page) {
+        if (scheduleStateMap.containsKey(page))
             return
+
+        viewModelScope.launch(exceptionHandler) {
+            scheduleStateMap = scheduleStateMap + (page to ScheduleState.Loading)
+            val objectId = schedulePreferences.activeId
+            val lessons = if (objectId != null)
+                scheduleMediator.getLessons(
+                    page.date,
+                    objectId,
+                    schedulePreferences.activeType
+                )
+            else
+                emptyList()
+            val subjectPresentations = lessons.map { subject ->
+                SubjectPresentation(subject, subject.isActive)
+            }
+            scheduleStateMap = scheduleStateMap +
+                (page to ScheduleState.Ready(subjectPresentations))
         }
-        state.value = pageStatuses.plus(page to ScheduleState.Loading)
-        loadSchedule(neededDate, page)
     }
 
-    fun removeAllAndLoadInitPage() {
-        state.value = mutableMapOf()
-        loadSchedule(initPage)
-    }
-
-    fun dateToPage(date: LocalDate): Int {
-        val now = LocalDate.now()
-        return initPage + Period.between(now, date).days
+    fun clearPagesAndLoadInitial() {
+        scheduleStateMap = mutableMapOf()
+        requestScheduleRange(Page.Initial)
     }
 
     val isIdAbsent: Boolean
-        get() = schedulePreferences.activeId == -1L
+        get() = schedulePreferences.activeId == null
 }

@@ -1,21 +1,30 @@
 package com.astrog.sheduleapp.di
 
 import com.astrog.sheduleapp.domain.ScheduleRepository
-import com.astrog.sheduleapp.domain.SearchRepository
-import com.astrog.sheduleapp.internal.repository.DefaultScheduleRepository
-import com.astrog.sheduleapp.internal.repository.DefaultSearchRepository
+import com.astrog.sheduleapp.domain.ScheduleService
+import com.astrog.sheduleapp.domain.SearchService
+import com.astrog.sheduleapp.internal.room.RoomScheduleRepository
+import com.astrog.sheduleapp.internal.service.DefaultScheduleService
+import com.astrog.sheduleapp.internal.service.DefaultSearchService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AppModule {
 
+    @Singleton
     @Binds
-    abstract fun bindScheduleRepository(repo: DefaultScheduleRepository): ScheduleRepository
+    abstract fun bindScheduleService(service: DefaultScheduleService): ScheduleService
 
+    @Singleton
     @Binds
-    abstract fun bindSearchRepository(repo: DefaultSearchRepository): SearchRepository
+    abstract fun bindSearchService(service: DefaultSearchService): SearchService
+
+    @Singleton
+    @Binds
+    abstract fun bindScheduleRepository(repo: RoomScheduleRepository): ScheduleRepository
 }

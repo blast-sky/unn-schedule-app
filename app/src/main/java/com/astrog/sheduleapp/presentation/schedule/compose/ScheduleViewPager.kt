@@ -2,15 +2,15 @@
 
 package com.astrog.sheduleapp.presentation.schedule.compose
 
-import android.annotation.SuppressLint
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,133 +25,96 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.astrog.sheduleapp.presentation.ScheduleAppBar
+import androidx.compose.ui.tooling.preview.Preview
+import com.astrog.sheduleapp.R
+import com.astrog.sheduleapp.internal.dto.LessonDto
 import com.astrog.sheduleapp.presentation.schedule.ScheduleState
-import com.astrog.sheduleapp.presentation.schedule.ScheduleViewModel
+import com.astrog.sheduleapp.presentation.schedule.ScheduleStateMap
+import com.astrog.sheduleapp.presentation.schedule.dateToStringWithDayOfWeek
+import com.astrog.sheduleapp.presentation.schedule.model.Page
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
-import com.astrog.sheduleapp.presentation.settingsdialog.compose.SettingsDialog
 import com.astrog.sheduleapp.util.defaultPadding
-import com.astrog.sheduleapp.util.initPage
-import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
-import com.maxkeppeler.sheets.calendar.CalendarDialog
-import com.maxkeppeler.sheets.calendar.models.CalendarConfig
-import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import com.maxkeppeler.sheets.calendar.models.CalendarStyle
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.Calendar.MONDAY
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScheduleViewPager(viewModel: ScheduleViewModel = hiltViewModel()) {
-    val state by viewModel.state
-    val pagerState = rememberPagerState(initPage)
-    val loadedPages = remember { mutableSetOf<Int>() }
-    var dialogShown by remember { mutableStateOf(viewModel.isIdAbsent) }
-
-    val calendarState = rememberUseCaseState(visible = false)
-
-    fun update() {
-        viewModel.removeAllAndLoadInitPage()
-        loadedPages.clear()
+fun ScheduleViewPager(
+    pagerState: PagerState,
+    requestSchedulePage: (Page) -> Unit,
+    onPageChanged: (Page) -> Unit,
+    state: ScheduleStateMap,
+    onMoveToInitial: () -> Unit,
+) {
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { ordinal ->
+            val page = Page(ordinal)
+            onPageChanged.invoke(page)
+            requestSchedulePage.invoke(page)
+        }
     }
 
-    Scaffold(
-        topBar = {
-            ScheduleAppBar(
-                title = "Расписание занятий",
-                onMenuClick = { dialogShown = !dialogShown },
-                onRefreshClick = ::update,
-                onCalendarClick = { calendarState.show() },
-                expanded = dialogShown,
-            )
-        },
-    ) {
-        val pagerScrollCoroutineScope = rememberCoroutineScope()
-        Column(modifier = Modifier.fillMaxSize()) {
-            HorizontalPager(
-                pageCount = Int.MAX_VALUE,
-                state = pagerState,
-                modifier = Modifier.weight(1f),
-            ) { currentPage ->
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = viewModel.pageToDateString(currentPage),
-                        style = MaterialTheme.typography.h4,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    if (currentPage !in loadedPages) {
-                        loadedPages += currentPage
-                        viewModel.loadSchedule(currentPage)
-                    }
-                    when (val cashedState = state[currentPage]) {
-                        ScheduleState.Loading -> ShowLoading()
-                        is ScheduleState.Ready -> ShowSchedule(subjects = cashedState.subjects)
-                        is ScheduleState.Error -> ShowError(message = cashedState.error)
-                        null -> Unit
-                    }
-                }
-            }
+    Column(modifier = Modifier.fillMaxSize()) {
+        HorizontalPager(
+            pageCount = Int.MAX_VALUE,
+            state = pagerState,
+            modifier = Modifier.weight(1f),
+            flingBehavior = flingBehavior(pagerState = pagerState),
+        ) { pageOrdinal ->
+            Column(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = dateToStringWithDayOfWeek(Page.ordinalToDate(pageOrdinal)),
+                    style = MaterialTheme.typography.h4,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                )
+                when (val cashedState = state[Page(pageOrdinal)]) {
+                    ScheduleState.Loading -> ShowLoading()
+                    is ScheduleState.Ready -> ShowSchedule(subjects = cashedState.subjects)
+                    is ScheduleState.Error.LoadError ->
+                        ShowError(message = stringResource(R.string.failed_to_load_data))
 
-            AnimatedVisibility(
-                visible = pagerState.currentPage != initPage,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(defaultPadding),
-            ) {
-                RollbackButton {
-                    pagerScrollCoroutineScope.launch {
-                        pagerState.animateScrollToPage(page = initPage)
-                    }
+                    ScheduleState.Error.NullIdError -> Unit
+                    null -> Unit
                 }
             }
         }
 
-        CalendarDialog(
-            state = calendarState,
-            config = CalendarConfig(
-                yearSelection = true,
-                monthSelection = true,
-                style = CalendarStyle.MONTH,
-            ),
-            selection = CalendarSelection.Date { date ->
-                pagerScrollCoroutineScope.launch {
-                    pagerState.animateScrollToPage(viewModel.dateToPage(date))
-                }
-            },
-        )
-
-        if (dialogShown) {
-            SettingsDialog(
-                onDismiss = { needToUpdate ->
-                    if (needToUpdate)
-                        update()
-                    dialogShown = false
-                }
-            )
+        AnimatedVisibility(
+            visible = pagerState.currentPage != Page.Initial.ordinal,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(defaultPadding),
+        ) {
+            RollbackButton { onMoveToInitial.invoke() }
         }
     }
 }
 
 @Composable
-fun RollbackButton(onClick: () -> Unit) {
+fun flingBehavior(pagerState: PagerState): SnapFlingBehavior {
+    return PagerDefaults.flingBehavior(
+        state = pagerState,
+        pagerSnapDistance = PagerSnapDistance.atMost(1),
+        lowVelocityAnimationSpec = spring(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessVeryLow,
+        ),
+    )
+}
+
+@Composable
+private fun RollbackButton(onClick: () -> Unit) {
     Button(
         onClick = { onClick.invoke() },
     ) {
@@ -163,17 +126,7 @@ fun RollbackButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun ShowSchedule(subjects: List<SubjectPresentation>) {
-    var currentSubjectsList by remember {
-        mutableStateOf<List<SubjectPresentation>>(listOf())
-    }
-    LaunchedEffect(key1 = LocalContext.current) {
-        for (subject in subjects) {
-            currentSubjectsList = currentSubjectsList + subject
-            delay(50)
-        }
-        currentSubjectsList = subjects
-    }
+private fun ShowSchedule(subjects: List<SubjectPresentation>) {
     if (subjects.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -187,7 +140,7 @@ fun ShowSchedule(subjects: List<SubjectPresentation>) {
     }
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(
-            items = currentSubjectsList,
+            items = subjects,
         ) { subject ->
             SubjectDtoItem(subject)
         }
@@ -195,15 +148,7 @@ fun ShowSchedule(subjects: List<SubjectPresentation>) {
 }
 
 @Composable
-fun flingBehavior(pagerState: PagerState, noOfPages: Int): FlingBehavior {
-    return PagerDefaults.flingBehavior(
-        state = pagerState,
-        pagerSnapDistance = PagerSnapDistance.atMost(10)
-    )
-}
-
-@Composable
-fun ShowError(message: String) {
+private fun ShowError(message: String) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -221,11 +166,44 @@ fun ShowError(message: String) {
 }
 
 @Composable
-fun ShowLoading() {
+private fun ShowLoading() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator()
     }
+}
+
+
+@Preview(name = "light", showBackground = true, uiMode = UI_MODE_NIGHT_NO)
+@Preview(name = "night", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewScheduleViewPager() {
+    ScheduleViewPager(
+        pagerState = rememberPagerState(),
+        requestSchedulePage = {},
+        onPageChanged = {},
+        state = mapOf(
+            Page.Initial to ScheduleState.Ready(
+                listOf(
+                    SubjectPresentation(
+                        LessonDto(
+                            "",
+                            MONDAY.toLong(),
+                            "",
+                            "",
+                            LocalTime.now(),
+                            LocalTime.now(),
+                            LocalDate.now(),
+                            "",
+                            "",
+                            "",
+                            "",
+                        ), true
+                    )
+                )
+            )
+        )
+    ) { }
 }
