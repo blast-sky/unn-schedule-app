@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.presentation.settingsdialog.compose
+package com.astrog.sheduleapp.presentation.settingsDialog.compose
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
