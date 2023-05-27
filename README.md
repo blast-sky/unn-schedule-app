@@ -1,4 +1,4 @@
-[![Latest release](https://img.shields.io/github/release/blast-sky/unn-schedule-app.svg)](https://github.com/blast-sky/unn-schedule-app/releases/latest)
+[<img src="https://img.shields.io/github/release/blast-sky/unn-schedule-app.svg"/>](https://github.com/blast-sky/unn-schedule-app/releases/latest)
 [![Unit tests](https://github.com/blast-sky/unn-schedule-app/workflows/Android%20Unit%20Tests/badge.svg?branch=main)](https://github.com/blast-sky/unn-schedule-app/actions)
 
 # Unn Schedule Application
