@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.presentation.settingsdialog.compose
+package com.astrog.sheduleapp.presentation.settingsDialog.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

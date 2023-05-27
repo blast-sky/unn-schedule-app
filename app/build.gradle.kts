@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
 
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.astrog.sheduleapp"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 33
         versionCode = 2
         versionName = "1.0.1"
@@ -47,7 +47,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = androidx.versions.compose.compiler.get()
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -65,6 +65,10 @@ dependencies {
     val hiltVersion = "2.45"
     val navVersion = "2.5.1"
 
+    implementation(stack.kotlin.logging)
+
+    implementation(stack.okhttp.loggingInterceptor)
+
     implementation("androidx.core:core-ktx")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material:material")
@@ -73,6 +77,10 @@ dependencies {
     implementation("androidx.activity:activity-compose")
 
     implementation(stack.accompanist.systemuicontroller)
+
+    implementation(androidx.room)
+    implementation(androidx.room.runtime)
+    kapt(androidx.room.compiler)
 
     testImplementation(stack.junit4)
 

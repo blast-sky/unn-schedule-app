@@ -1,14 +1,12 @@
 package com.astrog.sheduleapp.utils
 
-import com.astrog.sheduleapp.domain.model.SubjectDto
-import com.astrog.sheduleapp.util.dateFormatter
-import com.astrog.sheduleapp.util.isSubjectActive
-import com.astrog.sheduleapp.util.timeFormatter
+import com.astrog.sheduleapp.internal.dto.LessonDto
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.time.LocalTime
 import java.util.UUID
 
 
@@ -18,14 +16,14 @@ private fun randomString(): String {
 
 class DateTimeUtilsTest {
 
-    private val defaultSubjectDto = SubjectDto(
+    private val defaultLessonDto = LessonDto(
         auditorium = randomString(),
         dayOfWeek = 100,
         dayOfWeekString = randomString(),
         discipline = randomString(),
-        beginLesson = randomString(),
-        endLesson = randomString(),
-        date = randomString(),
+        beginLesson = LocalTime.now(),
+        endLesson = LocalTime.now(),
+        date = LocalDate.now(),
         building = randomString(),
         lecturer = randomString(),
         kindOfWork = randomString(),
@@ -36,38 +34,38 @@ class DateTimeUtilsTest {
     fun `isSubjectActive Must return true When subject is active`() {
         val currentDateTime = LocalDateTime.now()
 
-        val subjectDto = defaultSubjectDto.copy(
-            beginLesson = timeFormatter.format(currentDateTime.minusMinutes(10)),
-            endLesson = timeFormatter.format(currentDateTime.plusMinutes(5)),
-            date = dateFormatter.format(currentDateTime),
+        val subjectDto = defaultLessonDto.copy(
+            beginLesson = currentDateTime.toLocalTime().minusMinutes(10),
+            endLesson = currentDateTime.toLocalTime().plusMinutes(5),
+            date = currentDateTime.toLocalDate(),
         )
 
-        assertTrue(isSubjectActive(subjectDto))
+        assertTrue(subjectDto.isActive)
     }
 
     @Test
     fun `isSubjectActive Must return false When subject is not active`() {
         val currentDateTime = LocalDateTime.now()
 
-        val subjectDto = defaultSubjectDto.copy(
-            beginLesson = timeFormatter.format(currentDateTime.minusMinutes(10)),
-            endLesson = timeFormatter.format(currentDateTime.minusMinutes(5)),
-            date = dateFormatter.format(currentDateTime),
+        val subjectDto = defaultLessonDto.copy(
+            beginLesson = currentDateTime.toLocalTime().minusMinutes(10),
+            endLesson = currentDateTime.toLocalTime().minusMinutes(5),
+            date = currentDateTime.toLocalDate(),
         )
 
-        assertFalse(isSubjectActive(subjectDto))
+        assertFalse(subjectDto.isActive)
     }
 
     @Test
     fun `isSubjectActive Must return false When subject is dates are different`() {
         val currentDateTime = LocalDateTime.now()
 
-        val subjectDto = defaultSubjectDto.copy(
-            beginLesson = timeFormatter.format(currentDateTime.minusMinutes(10)),
-            endLesson = timeFormatter.format(currentDateTime.plusMinutes(5)),
-            date = dateFormatter.format(currentDateTime.plusDays(1)),
+        val subjectDto = defaultLessonDto.copy(
+            beginLesson = currentDateTime.toLocalTime().minusMinutes(10),
+            endLesson = currentDateTime.toLocalTime().plusMinutes(5),
+            date = currentDateTime.plusDays(1).toLocalDate(),
         )
 
-        assertFalse(isSubjectActive(subjectDto))
+        assertFalse(subjectDto.isActive)
     }
 }

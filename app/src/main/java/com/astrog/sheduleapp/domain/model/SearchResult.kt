@@ -1,6 +1,6 @@
 package com.astrog.sheduleapp.domain.model
 
-data class SearchResultDto(
+data class SearchResult(
     val id: Long,
     val label: String,
     val description: String,

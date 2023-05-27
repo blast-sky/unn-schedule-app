@@ -2,13 +2,11 @@
 
 package com.astrog.sheduleapp.presentation.schedule.compose
 
-import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.layout.Box
@@ -30,40 +28,37 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.astrog.sheduleapp.domain.model.SubjectDto
+import com.astrog.sheduleapp.R
+import com.astrog.sheduleapp.internal.dto.LessonDto
 import com.astrog.sheduleapp.presentation.schedule.ScheduleState
 import com.astrog.sheduleapp.presentation.schedule.ScheduleStateMap
+import com.astrog.sheduleapp.presentation.schedule.dateToStringWithDayOfWeek
+import com.astrog.sheduleapp.presentation.schedule.model.Page
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
 import com.astrog.sheduleapp.util.defaultPadding
-import com.astrog.sheduleapp.util.initialPage
-import kotlinx.coroutines.delay
-import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.Calendar.MONDAY
 
 @Composable
 fun ScheduleViewPager(
     pagerState: PagerState,
-    requestSchedulePage: (Int) -> Unit,
-    pageToDateString: (Int) -> String,
+    requestSchedulePage: (Page) -> Unit,
+    onPageChanged: (Page) -> Unit,
     state: ScheduleStateMap,
     onMoveToInitial: () -> Unit,
 ) {
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
+        snapshotFlow { pagerState.currentPage }.collect { ordinal ->
+            val page = Page(ordinal)
+            onPageChanged.invoke(page)
             requestSchedulePage.invoke(page)
         }
     }
@@ -74,26 +69,29 @@ fun ScheduleViewPager(
             state = pagerState,
             modifier = Modifier.weight(1f),
             flingBehavior = flingBehavior(pagerState = pagerState),
-        ) { currentPage ->
+        ) { pageOrdinal ->
             Column(modifier = Modifier.fillMaxSize()) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = pageToDateString.invoke(currentPage),
+                    text = dateToStringWithDayOfWeek(Page.ordinalToDate(pageOrdinal)),
                     style = MaterialTheme.typography.h4,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                 )
-                when (val cashedState = state[currentPage]) {
+                when (val cashedState = state[Page(pageOrdinal)]) {
                     ScheduleState.Loading -> ShowLoading()
                     is ScheduleState.Ready -> ShowSchedule(subjects = cashedState.subjects)
-                    is ScheduleState.Error -> ShowError(message = cashedState.error)
+                    is ScheduleState.Error.LoadError ->
+                        ShowError(message = stringResource(R.string.failed_to_load_data))
+
+                    ScheduleState.Error.NullIdError -> Unit
                     null -> Unit
                 }
             }
         }
 
         AnimatedVisibility(
-            visible = pagerState.currentPage != initialPage,
+            visible = pagerState.currentPage != Page.Initial.ordinal,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(defaultPadding),
@@ -185,23 +183,25 @@ private fun PreviewScheduleViewPager() {
     ScheduleViewPager(
         pagerState = rememberPagerState(),
         requestSchedulePage = {},
-        pageToDateString = { String() },
+        onPageChanged = {},
         state = mapOf(
-            0 to ScheduleState.Ready(
+            Page.Initial to ScheduleState.Ready(
                 listOf(
-                    SubjectPresentation(SubjectDto(
-                        "",
-                        MONDAY.toLong(),
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                    ), true)
+                    SubjectPresentation(
+                        LessonDto(
+                            "",
+                            MONDAY.toLong(),
+                            "",
+                            "",
+                            LocalTime.now(),
+                            LocalTime.now(),
+                            LocalDate.now(),
+                            "",
+                            "",
+                            "",
+                            "",
+                        ), true
+                    )
                 )
             )
         )

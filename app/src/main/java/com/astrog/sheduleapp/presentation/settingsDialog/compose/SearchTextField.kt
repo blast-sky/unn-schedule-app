@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.presentation.settingsdialog.compose
+package com.astrog.sheduleapp.presentation.settingsDialog.compose
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Divider
@@ -23,12 +23,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import com.astrog.sheduleapp.domain.model.SearchResultDto
+import androidx.compose.ui.res.stringResource
+import com.astrog.sheduleapp.R
+import com.astrog.sheduleapp.domain.model.SearchResult
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchTextField(
-    suggestedResults: List<SearchResultDto>,
+    suggestedResults: List<SearchResult>,
     selectedItem: String,
     onSelectedItemChange: (String) -> Unit,
     searchTerm: (String) -> Unit,
@@ -57,9 +59,9 @@ fun SearchTextField(
             label = {
                 Text(
                     text = if (selectedItem.isBlank())
-                        "Начните писать..."
+                        stringResource(R.string.start_to_write)
                     else
-                        "Поиск"
+                        stringResource(R.string.search)
                 )
             },
             trailingIcon = {

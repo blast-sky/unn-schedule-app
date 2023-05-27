@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -29,17 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.astrog.sheduleapp.domain.model.SubjectDto
-import com.astrog.sheduleapp.presentation.schedule.ScheduleState
+import com.astrog.sheduleapp.internal.dto.LessonDto
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
 import com.astrog.sheduleapp.util.borderStrokeWidth
 import com.astrog.sheduleapp.util.defaultPadding
 import com.astrog.sheduleapp.util.roundRadius
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.Calendar
 
 @Composable
 fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier = Modifier) {
-    val subject = subjectPresentation.subjectDto
+    val subject = subjectPresentation.lesson
     val border = BorderStroke(borderStrokeWidth, colors.onSurface)
         .takeIf { subjectPresentation.isActive }
 
@@ -142,14 +142,14 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
 private fun PreviewSubjectDtoItem() {
     SubjectDtoItem(
         SubjectPresentation(
-            SubjectDto(
+            LessonDto(
                 "",
                 Calendar.MONDAY.toLong(),
                 "",
                 "",
-                "",
-                "",
-                "",
+                LocalTime.now(),
+                LocalTime.now(),
+                LocalDate.now(),
                 "",
                 "",
                 "",

@@ -1,12 +1,13 @@
 package com.astrog.sheduleapp.domain
 
-import com.astrog.sheduleapp.domain.model.SearchResultDto
+import com.astrog.sheduleapp.domain.model.ScheduleType
+import com.astrog.sheduleapp.domain.model.SearchResult
 import javax.inject.Inject
 
 class TermSearcher @Inject constructor(
-    private val searchRepository: SearchRepository,
+    private val searchService: SearchService,
 ) {
 
-    suspend fun searchTerm(type: String, term: String): List<SearchResultDto> =
-        searchRepository.searchTypeByTerm(type, term)
+    suspend fun searchTerm(type: ScheduleType, term: String): List<SearchResult> =
+        searchService.searchTypeByTerm(type, term)
 }

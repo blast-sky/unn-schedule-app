@@ -1,6 +1,7 @@
 package com.astrog.sheduleapp.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
@@ -21,17 +22,25 @@ private val LightColorPalette = lightColors(
     secondary = Teal200
 )
 
+val Colors.onPrimarySurface get() = if (isLight) onPrimary else onSurface
+
 @Composable
 fun ScheduleAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    val systemUiController = rememberSystemUiController()
+
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
         LightColorPalette
     }
+
     MaterialTheme(
         colors = colors,
         typography = Typography,
         shapes = Shapes,
-        content = content
+        content = {
+            systemUiController.setStatusBarColor(color = MaterialTheme.colors.primarySurface)
+            content.invoke()
+        }
     )
 }
