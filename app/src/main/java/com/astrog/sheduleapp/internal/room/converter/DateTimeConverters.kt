@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.internal.room
+package com.astrog.sheduleapp.internal.room.converter
 
 import androidx.room.TypeConverter
 import java.time.Instant
@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
 
-class Converters {
+class DateTimeConverters {
 
     @TypeConverter
     fun localDateTimeToLong(localDateTime: LocalDateTime): Long {

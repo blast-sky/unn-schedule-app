@@ -13,7 +13,7 @@ interface Lesson {
     val date: LocalDate
     val building: String
     val lecturer: String
-    val kindOfWork: String
+    val kindOfWork: KindOfWork
     val stream: String?
 
     val isActive: Boolean

@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
+import com.astrog.sheduleapp.domain.model.KindOfWork
 import com.astrog.sheduleapp.domain.model.Lesson
 import java.time.LocalDate
 import java.time.LocalTime
@@ -34,6 +35,6 @@ data class LessonEntity(
     override val date: LocalDate,
     override val building: String,
     override val lecturer: String,
-    override val kindOfWork: String,
+    override val kindOfWork: KindOfWork,
     override val stream: String?,
 ) : Lesson

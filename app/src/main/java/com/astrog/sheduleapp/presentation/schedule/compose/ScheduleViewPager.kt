@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.astrog.sheduleapp.R
+import com.astrog.sheduleapp.domain.model.KindOfWork
 import com.astrog.sheduleapp.internal.dto.LessonDto
 import com.astrog.sheduleapp.presentation.schedule.ScheduleState
 import com.astrog.sheduleapp.presentation.schedule.ScheduleStateMap
@@ -198,7 +199,7 @@ private fun PreviewScheduleViewPager() {
                             LocalDate.now(),
                             "",
                             "",
-                            "",
+                            KindOfWork.Lecture(""),
                             "",
                         ), true
                     )
