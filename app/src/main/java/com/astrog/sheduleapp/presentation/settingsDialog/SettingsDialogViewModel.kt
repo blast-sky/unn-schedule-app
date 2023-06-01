@@ -5,12 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astrog.sheduleapp.domain.TermSearcher
-import com.astrog.sheduleapp.domain.model.ScheduleType
+import com.astrog.sheduleapp.domain.model.lesson.KindOfWork
+import com.astrog.sheduleapp.domain.model.lesson.ScheduleType
 import com.astrog.sheduleapp.internal.SchedulePreferences
 import com.astrog.sheduleapp.presentation.settingsDialog.compose.logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +24,7 @@ class SettingsDialogViewModel @Inject constructor(
     private val schedulePreferences: SchedulePreferences,
 ) : ViewModel() {
 
-    private val lastSearchJob: Job? = null
+    private var lastSearchJob: Job? = null
 
     val state = mutableStateOf(
         getStateInitializedByPreferences()
@@ -33,12 +35,18 @@ class SettingsDialogViewModel @Inject constructor(
         with(state) { value = value.copy(networkError = true) }
     }
 
-    fun setActiveState(type: ScheduleType, id: String, term: String) {
+    fun setActiveState(
+        type: ScheduleType,
+        id: String,
+        term: String,
+        selectedKindOfWork: Set<KindOfWork>,
+    ) {
         try {
             with(schedulePreferences) {
                 activeId = id.toLong()
                 activeType = type
                 lastTerm = term
+                activeKindsOfWork = selectedKindOfWork
             }
         } catch (ex: NumberFormatException) {
             logger.error { ex.stackTraceToString() }
@@ -48,7 +56,8 @@ class SettingsDialogViewModel @Inject constructor(
 
     fun searchTerm(type: ScheduleType, term: String) {
         lastSearchJob?.cancel()
-        viewModelScope.launch(exceptionHandler) {
+        lastSearchJob = viewModelScope.launch(exceptionHandler) {
+            delay(300) // debounce
             state.value = state.value.copy(
                 suggestedResults = termSearcher.searchTerm(type, term),
                 networkError = false,
@@ -62,6 +71,7 @@ class SettingsDialogViewModel @Inject constructor(
             activeId = schedulePreferences.activeId?.toString() ?: String(),
             activeTerm = schedulePreferences.lastTerm,
             suggestedResults = emptyList(),
+            selectedKindOfWork = schedulePreferences.activeKindsOfWork,
         )
     }
 }

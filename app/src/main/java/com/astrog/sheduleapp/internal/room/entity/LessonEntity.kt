@@ -5,7 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
-import com.astrog.sheduleapp.domain.model.Lesson
+import com.astrog.sheduleapp.domain.model.lesson.KindOfWork
+import com.astrog.sheduleapp.domain.model.lesson.Lesson
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -18,7 +19,7 @@ import java.time.LocalTime
             childColumns = ["cached_day_id"],
             onDelete = CASCADE,
         )
-    ]
+    ],
 )
 data class LessonEntity(
     @PrimaryKey(autoGenerate = true)
@@ -31,9 +32,17 @@ data class LessonEntity(
     override val discipline: String,
     override val beginLesson: LocalTime,
     override val endLesson: LocalTime,
+    @ColumnInfo(index = true)
     override val date: LocalDate,
     override val building: String,
     override val lecturer: String,
     override val kindOfWork: String,
     override val stream: String?,
-) : Lesson
+    @JvmField
+    val kindOfWorkType: KindOfWork,
+) : Lesson {
+
+    override fun getKindOfWorkType(): KindOfWork {
+        return kindOfWorkType
+    }
+}

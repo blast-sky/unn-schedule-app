@@ -1,5 +1,6 @@
 package com.astrog.sheduleapp.utils
 
+import com.astrog.sheduleapp.domain.model.lesson.isActive
 import com.astrog.sheduleapp.internal.dto.LessonDto
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

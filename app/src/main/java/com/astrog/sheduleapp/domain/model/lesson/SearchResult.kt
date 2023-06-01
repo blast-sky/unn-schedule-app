@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.domain.model
+package com.astrog.sheduleapp.domain.model.lesson
 
 data class SearchResult(
     val id: Long,

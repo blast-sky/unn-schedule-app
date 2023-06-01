@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.domain.model
+package com.astrog.sheduleapp.domain.model.lesson
 
 import java.time.LocalDate
 import java.time.LocalTime
@@ -16,13 +16,15 @@ interface Lesson {
     val kindOfWork: String
     val stream: String?
 
-    val isActive: Boolean
-        get() {
-            if (date != LocalDate.now())
-                return false
-
-            val currentTime = LocalTime.now()
-
-            return currentTime.isAfter(beginLesson) && currentTime.isBefore(endLesson)
-        }
+    fun getKindOfWorkType(): KindOfWork
 }
+
+val Lesson.isActive: Boolean
+    get() {
+        if (date != LocalDate.now())
+            return false
+
+        val currentTime = LocalTime.now()
+
+        return currentTime.isAfter(beginLesson) && currentTime.isBefore(endLesson)
+    }

@@ -1,7 +1,7 @@
 package com.astrog.sheduleapp.domain
 
-import com.astrog.sheduleapp.domain.model.ScheduleType
-import com.astrog.sheduleapp.domain.model.SearchResult
+import com.astrog.sheduleapp.domain.model.lesson.ScheduleType
+import com.astrog.sheduleapp.domain.model.lesson.SearchResult
 
 interface SearchService {
 

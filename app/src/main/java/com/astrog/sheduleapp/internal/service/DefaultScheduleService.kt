@@ -1,8 +1,8 @@
 package com.astrog.sheduleapp.internal.service
 
 import com.astrog.sheduleapp.domain.ScheduleService
-import com.astrog.sheduleapp.domain.model.ScheduleType
-import com.astrog.sheduleapp.domain.model.StudyDay
+import com.astrog.sheduleapp.domain.model.lesson.ScheduleType
+import com.astrog.sheduleapp.domain.model.lesson.StudyDay
 import com.astrog.sheduleapp.util.LocalDateRange
 import java.time.LocalDate
 import javax.inject.Inject

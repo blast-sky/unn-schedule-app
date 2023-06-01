@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.astrog.sheduleapp.domain.ScheduleMediator
+import com.astrog.sheduleapp.domain.model.filter.KindOfWorkFilter
+import com.astrog.sheduleapp.domain.model.lesson.isActive
+import com.astrog.sheduleapp.domain.scheduleMediator.FilteredMediator
 import com.astrog.sheduleapp.internal.SchedulePreferences
 import com.astrog.sheduleapp.presentation.schedule.model.Page
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
@@ -23,7 +25,7 @@ private val logger = KotlinLogging.logger { }
 
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
-    private val scheduleMediator: ScheduleMediator,
+    private val filteredMediator: FilteredMediator,
     private val schedulePreferences: SchedulePreferences,
 ) : ViewModel() {
 
@@ -64,15 +66,20 @@ class ScheduleViewModel @Inject constructor(
 
         viewModelScope.launch(exceptionHandler) {
             scheduleStateMap = scheduleStateMap + (page to ScheduleState.Loading)
+
             val objectId = schedulePreferences.activeId
+            val activeKindsOfWork = schedulePreferences.activeKindsOfWork
+
             val lessons = if (objectId != null)
-                scheduleMediator.getLessons(
+                filteredMediator.getLessons(
                     page.date,
                     objectId,
-                    schedulePreferences.activeType
+                    schedulePreferences.activeType,
+                    KindOfWorkFilter(activeKindsOfWork),
                 )
             else
                 emptyList()
+
             val subjectPresentations = lessons.map { subject ->
                 SubjectPresentation(subject, subject.isActive)
             }

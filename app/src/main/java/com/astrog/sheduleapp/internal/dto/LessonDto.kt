@@ -1,12 +1,11 @@
 package com.astrog.sheduleapp.internal.dto
 
-import android.os.Parcelable
-import com.astrog.sheduleapp.domain.model.Lesson
-import kotlinx.parcelize.Parcelize
+import com.astrog.sheduleapp.domain.model.lesson.KindOfWork
+import com.astrog.sheduleapp.domain.model.lesson.Lesson
+import com.astrog.sheduleapp.internal.service.typeAdapter.KindOfWorkSerializer
 import java.time.LocalDate
 import java.time.LocalTime
 
-@Parcelize
 data class LessonDto(
     override val auditorium: String,
     override val dayOfWeek: Long,
@@ -19,4 +18,14 @@ data class LessonDto(
     override val lecturer: String,
     override val kindOfWork: String,
     override val stream: String?,
-) : Lesson, Parcelable
+) : Lesson {
+
+    private lateinit var _kindOfWorkType: KindOfWork
+
+    override fun getKindOfWorkType(): KindOfWork {
+        if (!this::_kindOfWorkType.isInitialized) {
+            _kindOfWorkType = KindOfWorkSerializer.stringToKindOfWork(kindOfWork)
+        }
+        return _kindOfWorkType
+    }
+}
