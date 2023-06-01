@@ -1,15 +1,17 @@
-package com.astrog.sheduleapp.domain
+package com.astrog.sheduleapp.domain.scheduleMediator
 
+import com.astrog.sheduleapp.domain.ScheduleRepository
+import com.astrog.sheduleapp.domain.ScheduleService
 import com.astrog.sheduleapp.domain.model.Cache
-import com.astrog.sheduleapp.domain.model.Lesson
-import com.astrog.sheduleapp.domain.model.ScheduleType
-import com.astrog.sheduleapp.domain.model.StudyDay
+import com.astrog.sheduleapp.domain.model.lesson.Lesson
+import com.astrog.sheduleapp.domain.model.lesson.ScheduleType
+import com.astrog.sheduleapp.domain.model.lesson.StudyDay
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.time.LocalDate
 import javax.inject.Inject
 
-class ScheduleMediator @Inject constructor(
+class ServiceRepoMediator @Inject constructor(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleService: ScheduleService,
 ) {

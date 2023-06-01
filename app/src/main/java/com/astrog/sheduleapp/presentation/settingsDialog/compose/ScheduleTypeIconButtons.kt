@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.astrog.sheduleapp.R
-import com.astrog.sheduleapp.domain.model.ScheduleType
+import com.astrog.sheduleapp.domain.model.lesson.ScheduleType
 
 @Composable
 fun ScheduleTypeIconButtons(

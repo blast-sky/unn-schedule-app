@@ -5,8 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.astrog.sheduleapp.domain.model.Lesson
-import com.astrog.sheduleapp.domain.model.StudyDay
+import com.astrog.sheduleapp.domain.model.lesson.Lesson
+import com.astrog.sheduleapp.domain.model.lesson.StudyDay
 import com.astrog.sheduleapp.internal.mapper.toLessonEntity
 import com.astrog.sheduleapp.internal.room.entity.StudyDayWithLessonsEntity
 import com.astrog.sheduleapp.internal.room.entity.LessonEntity

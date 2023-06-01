@@ -1,7 +1,7 @@
 package com.astrog.sheduleapp.domain
 
-import com.astrog.sheduleapp.domain.model.ScheduleType
-import com.astrog.sheduleapp.domain.model.StudyDay
+import com.astrog.sheduleapp.domain.model.lesson.ScheduleType
+import com.astrog.sheduleapp.domain.model.lesson.StudyDay
 import java.time.LocalDate
 
 interface ScheduleService {

@@ -2,8 +2,7 @@ package com.astrog.sheduleapp.internal.room
 
 import com.astrog.sheduleapp.domain.ScheduleRepository
 import com.astrog.sheduleapp.domain.model.Cache
-import com.astrog.sheduleapp.domain.model.Lesson
-import com.astrog.sheduleapp.domain.model.StudyDay
+import com.astrog.sheduleapp.domain.model.lesson.StudyDay
 import com.astrog.sheduleapp.internal.room.entity.StudyDayWithLessonsEntity
 import java.time.Duration
 import java.time.LocalDate

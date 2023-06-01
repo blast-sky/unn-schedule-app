@@ -1,10 +1,8 @@
 package com.astrog.sheduleapp.di
 
-import com.astrog.sheduleapp.domain.model.KindOfWork
 import com.astrog.sheduleapp.internal.service.RuzapiClient
 import com.astrog.sheduleapp.internal.service.RuzapiClient.Companion.BASE_URL
 import com.astrog.sheduleapp.internal.service.typeAdapter.EnumConverterFactory
-import com.astrog.sheduleapp.internal.service.typeAdapter.KindOfWorkSerializer
 import com.astrog.sheduleapp.internal.service.typeAdapter.LocalDateSerializer
 import com.astrog.sheduleapp.internal.service.typeAdapter.LocalTimeSerializer
 import com.google.gson.GsonBuilder
@@ -33,7 +31,6 @@ class WebModule {
         val gson = GsonBuilder()
             .registerTypeAdapter(LocalDate::class.java, LocalDateSerializer())
             .registerTypeAdapter(LocalTime::class.java, LocalTimeSerializer())
-            .registerTypeAdapter(KindOfWork::class.java, KindOfWorkSerializer())
             .create()
 
         val client = OkHttpClient.Builder()

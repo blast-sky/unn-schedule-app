@@ -1,35 +1,23 @@
 package com.astrog.sheduleapp.internal.service.typeAdapter
 
-import com.astrog.sheduleapp.domain.model.KindOfWork
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
-import java.lang.reflect.Type
+import com.astrog.sheduleapp.domain.model.lesson.KindOfWork
 
-class KindOfWorkSerializer : JsonDeserializer<KindOfWork> {
-
-    override fun deserialize(
-        json: JsonElement?,
-        typeOfT: Type?,
-        context: JsonDeserializationContext?,
-    ): KindOfWork? = json?.let {
-        stringToKindOfWork(it.asString)
-    }
+class KindOfWorkSerializer {
 
     companion object {
         private val kindOfWorkToPhrase = listOf(
-            { s: String -> KindOfWork.Lab(s) } to listOf(
+            KindOfWork.Lab to listOf(
                 "лаб",
                 "лаборатор",
                 "ЛР",
                 "labor",
                 "lab",
             ),
-            { s: String -> KindOfWork.Seminar(s) } to listOf(
+            KindOfWork.Seminar to listOf(
                 "семинар",
                 "seminar",
             ),
-            { s: String -> KindOfWork.Practice(s) } to listOf(
+            KindOfWork.Practice to listOf(
                 "практ",
                 "ПЗ",
                 "pract",
@@ -38,16 +26,16 @@ class KindOfWorkSerializer : JsonDeserializer<KindOfWork> {
                 "заняти",
                 "урок",
             ),
-            { s: String -> KindOfWork.Exam(s) } to listOf(
+            KindOfWork.Exam to listOf(
                 "экзамен",
                 "зачет",
                 "зачёт",
                 "exam",
             ),
-            { s: String -> KindOfWork.Consult(s) } to listOf(
+            KindOfWork.Consult to listOf(
                 "консульт",
             ),
-            { s: String -> KindOfWork.Lecture(s) } to listOf(
+            KindOfWork.Lecture to listOf(
                 "лекц",
                 "Л",
                 "lect",
@@ -58,14 +46,14 @@ class KindOfWorkSerializer : JsonDeserializer<KindOfWork> {
 
         fun stringToKindOfWork(string: String): KindOfWork {
             val lowercaseString = string.lowercase().trim()
-            kindOfWorkToPhrase.forEach { (factory, phrases) ->
+            kindOfWorkToPhrase.forEach { (kindOfWork, phrases) ->
                 phrases.forEach { phrase ->
                     if (phrase in lowercaseString) {
-                        return factory.invoke(string)
+                        return kindOfWork
                     }
                 }
             }
-            return KindOfWork.Unknown(string)
+            return KindOfWork.Unknown
         }
     }
 }

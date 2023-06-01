@@ -1,4 +1,4 @@
-package com.astrog.sheduleapp.domain.model
+package com.astrog.sheduleapp.domain.model.lesson
 
 import java.time.LocalDate
 

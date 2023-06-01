@@ -5,16 +5,19 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.astrog.sheduleapp.internal.room.converter.DateTimeConverters
 import com.astrog.sheduleapp.internal.room.converter.KindOfWorkConverter
-import com.astrog.sheduleapp.internal.room.entity.StudyDayEntity
 import com.astrog.sheduleapp.internal.room.entity.LessonEntity
+import com.astrog.sheduleapp.internal.room.entity.StudyDayEntity
 
 @TypeConverters(
     DateTimeConverters::class,
     KindOfWorkConverter::class,
 )
 @Database(
-    entities = [LessonEntity::class, StudyDayEntity::class],
-    version = 5,
+    entities = [
+        LessonEntity::class,
+        StudyDayEntity::class,
+    ],
+    version = 6,
 )
 abstract class ScheduleDatabase : RoomDatabase() {
 

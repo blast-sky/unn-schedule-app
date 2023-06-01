@@ -1,18 +1,13 @@
 package com.astrog.sheduleapp.internal.room.converter
 
 import androidx.room.TypeConverter
-import com.astrog.sheduleapp.domain.model.KindOfWork
-import com.astrog.sheduleapp.internal.service.typeAdapter.KindOfWorkSerializer
+import com.astrog.sheduleapp.domain.model.lesson.KindOfWork
 
 class KindOfWorkConverter {
 
     @TypeConverter
-    fun kindOfWorkToString(kindOfWork: KindOfWork): String {
-        return kindOfWork.type
-    }
+    fun intToKindOfWork(value: Int) = enumValues<KindOfWork>()[value]
 
     @TypeConverter
-    fun stringToKindOfString(string: String): KindOfWork {
-        return KindOfWorkSerializer.stringToKindOfWork(string)
-    }
+    fun kindOfWorkToInt(value: KindOfWork) = value.ordinal
 }

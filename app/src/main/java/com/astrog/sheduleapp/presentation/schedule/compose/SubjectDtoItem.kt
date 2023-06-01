@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.astrog.sheduleapp.domain.model.KindOfWork
+import com.astrog.sheduleapp.domain.model.lesson.KindOfWork
 import com.astrog.sheduleapp.internal.dto.LessonDto
 import com.astrog.sheduleapp.presentation.schedule.model.SubjectPresentation
 import com.astrog.sheduleapp.util.borderStrokeWidth
@@ -59,7 +59,7 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
         Column(
             modifier = Modifier.clickable { needToShowKindOfWork = !needToShowKindOfWork },
         ) {
-            val headerColor = if (subject.kindOfWork is KindOfWork.Lecture) {
+            val headerColor = if (subject.getKindOfWorkType() == KindOfWork.Lecture) {
                 colors.primary
             } else {
                 colors.secondary
@@ -86,7 +86,7 @@ fun SubjectDtoItem(subjectPresentation: SubjectPresentation, modifier: Modifier 
                     if (needToShowKindOfWork) {
                         Spacer(modifier = Modifier.size(5.dp))
                         Text(
-                            text = subject.kindOfWork.type,
+                            text = subject.kindOfWork,
                             textAlign = TextAlign.Start,
                             color = colors.onPrimary,
                             softWrap = true,
@@ -153,7 +153,7 @@ private fun PreviewSubjectDtoItem() {
                 LocalDate.now(),
                 "",
                 "",
-                KindOfWork.Lecture(""),
+                "",
                 "",
             ),
             true,

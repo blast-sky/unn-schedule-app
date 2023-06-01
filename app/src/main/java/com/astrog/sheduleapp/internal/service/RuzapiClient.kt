@@ -1,8 +1,8 @@
 package com.astrog.sheduleapp.internal.service
 
-import com.astrog.sheduleapp.domain.model.ScheduleType
+import com.astrog.sheduleapp.domain.model.lesson.ScheduleType
 import com.astrog.sheduleapp.internal.dto.LessonDto
-import com.astrog.sheduleapp.domain.model.SearchResult
+import com.astrog.sheduleapp.domain.model.lesson.SearchResult
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path

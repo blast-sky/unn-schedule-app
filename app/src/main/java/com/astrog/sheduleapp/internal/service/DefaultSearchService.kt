@@ -1,8 +1,8 @@
 package com.astrog.sheduleapp.internal.service
 
 import com.astrog.sheduleapp.domain.SearchService
-import com.astrog.sheduleapp.domain.model.ScheduleType
-import com.astrog.sheduleapp.domain.model.SearchResult
+import com.astrog.sheduleapp.domain.model.lesson.ScheduleType
+import com.astrog.sheduleapp.domain.model.lesson.SearchResult
 import javax.inject.Inject
 
 class DefaultSearchService @Inject constructor(

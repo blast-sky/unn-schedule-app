@@ -14,18 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.astrog.sheduleapp.R
-import com.astrog.sheduleapp.domain.model.ScheduleType
-import com.astrog.sheduleapp.presentation.settingsDialog.SettingsDialogViewModel
 
 
 @Composable
 fun BottomButtonsRow(
     onDismiss: () -> Unit,
-    viewModel: SettingsDialogViewModel,
-    currentType: ScheduleType,
-    currentId: String,
-    selectedTerm: String,
-    updateScheduleContent: () -> Unit,
+    onSubmit: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -33,7 +27,7 @@ fun BottomButtonsRow(
         verticalAlignment = Alignment.Bottom,
     ) {
         Button(
-            onClick = { onDismiss.invoke() },
+            onClick = onDismiss,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.surface,
             ),
@@ -46,12 +40,7 @@ fun BottomButtonsRow(
         }
 
         Button(onClick = {
-            viewModel.setActiveState(
-                type = currentType,
-                id = currentId,
-                term = selectedTerm,
-            )
-            updateScheduleContent.invoke()
+            onSubmit.invoke()
             onDismiss.invoke()
         }) {
             Text(text = stringResource(R.string.submit))
