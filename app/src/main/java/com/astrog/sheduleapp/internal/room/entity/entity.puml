@@ -1,0 +1,34 @@
+@startuml
+
+skinparam linetype ortho
+
+entity StudyDayEntity {
+  *id : Long <<generated>>
+  --
+  *objectId: Long
+  *date: LocalDate
+  *modifiedDateTime: LocalDateTime
+}
+
+entity LessonEntity {
+    *id : Long <<generated>>
+    --
+    *cachedDayId: Long <<index, fk>>
+    *date: LocalDate <<index>>
+    ...
+    *beginLesson: LocalTime
+    *endLesson: LocalTime
+    ...
+}
+
+object StudyDayWithLessonsView {
+    *day: StudyDayEntity
+    *lessons: List<LessonEntity>
+}
+
+
+StudyDayEntity ||..o{ LessonEntity
+StudyDayEntity ||..|| StudyDayWithLessonsView
+StudyDayWithLessonsView ||..o{ LessonEntity
+
+@enduml
