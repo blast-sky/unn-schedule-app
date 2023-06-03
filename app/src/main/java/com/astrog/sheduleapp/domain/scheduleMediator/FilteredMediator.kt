@@ -23,7 +23,7 @@ class FilteredMediator @Inject constructor(
     ): List<Lesson> {
         return serviceRepoMediator
             .getLessons(date, objectId, objectType)
-            .onEach { logger.error { it.toString() } }
+            .onEach { logger.debug { it.toString() } }
             .filter(filter::isSatisfy)
     }
 }
