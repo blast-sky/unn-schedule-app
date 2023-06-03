@@ -89,7 +89,10 @@ fun SettingsDialog(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 BottomButtonsRow(
-                    onDismiss,
+                    onDismiss = {
+                        viewModel.clearSuggestedResults()
+                        onDismiss.invoke()
+                    },
                     onSubmit = {
                         viewModel.setActiveState(
                             type = currentType,

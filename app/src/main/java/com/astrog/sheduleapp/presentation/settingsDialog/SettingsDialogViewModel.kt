@@ -1,7 +1,10 @@
 package com.astrog.sheduleapp.presentation.settingsDialog
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astrog.sheduleapp.domain.TermSearcher
@@ -24,15 +27,16 @@ class SettingsDialogViewModel @Inject constructor(
     private val schedulePreferences: SchedulePreferences,
 ) : ViewModel() {
 
-    private var lastSearchJob: Job? = null
+    private val _state = mutableStateOf(getStateInitializedByPreferences())
 
-    val state = mutableStateOf(
-        getStateInitializedByPreferences()
-    )
+    private var settingsDialogState by _state
+    val state: State<SettingsDialogState> = _state
+
+    private var lastSearchJob: Job? = null
 
     private val exceptionHandler = CoroutineExceptionHandler { _, ex ->
         Log.e(TAG, ex.stackTraceToString())
-        with(state) { value = value.copy(networkError = true) }
+        settingsDialogState = settingsDialogState.copy(networkError = true)
     }
 
     fun setActiveState(
@@ -51,18 +55,22 @@ class SettingsDialogViewModel @Inject constructor(
         } catch (ex: NumberFormatException) {
             logger.error { ex.stackTraceToString() }
         }
-        state.value = getStateInitializedByPreferences()
+        settingsDialogState = getStateInitializedByPreferences()
     }
 
     fun searchTerm(type: ScheduleType, term: String) {
         lastSearchJob?.cancel()
         lastSearchJob = viewModelScope.launch(exceptionHandler) {
             delay(300) // debounce
-            state.value = state.value.copy(
+            _state.value = _state.value.copy(
                 suggestedResults = termSearcher.searchTerm(type, term),
                 networkError = false,
             )
         }
+    }
+
+    fun clearSuggestedResults() {
+        settingsDialogState = settingsDialogState.copy(suggestedResults = emptyList())
     }
 
     private fun getStateInitializedByPreferences(): SettingsDialogState {

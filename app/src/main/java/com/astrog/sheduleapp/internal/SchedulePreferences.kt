@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class SchedulePreferences @Inject constructor(
-    @ApplicationContext private val application: Context,
+    @ApplicationContext application: Context,
 ) {
 
     private val preferences = application.getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE)
