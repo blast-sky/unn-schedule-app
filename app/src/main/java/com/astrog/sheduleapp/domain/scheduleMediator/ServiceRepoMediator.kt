@@ -10,7 +10,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.time.LocalDate
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ServiceRepoMediator @Inject constructor(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleService: ScheduleService,

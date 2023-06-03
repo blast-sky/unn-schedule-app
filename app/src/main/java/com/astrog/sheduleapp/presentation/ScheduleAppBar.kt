@@ -4,7 +4,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -34,7 +33,6 @@ fun ScheduleAppBar(
     onCalendarClick: () -> Unit,
     expanded: Boolean,
 ) {
-    var refreshAngle by remember { mutableStateOf(0f) }
     TopAppBar(
         title = { Text(title) },
         navigationIcon = {
@@ -50,12 +48,7 @@ fun ScheduleAppBar(
                     tint = MaterialTheme.colors.onPrimarySurface,
                 )
             }
-            IconButton(onClick = {
-                refreshAngle += 360f
-                onRefreshClick.invoke()
-            }) {
-                AnimatedRefreshIcon(refreshAngle = refreshAngle)
-            }
+            AnimatedRefreshIcon(onRefreshClick = onRefreshClick)
         }
     )
 }
@@ -66,7 +59,8 @@ private fun AnimatedMenuIcon(expanded: Boolean) {
         targetValue = if (expanded) -90f else 0f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
-        ))
+        )
+    )
 
     Icon(
         imageVector = Icons.Filled.Menu,
@@ -77,21 +71,28 @@ private fun AnimatedMenuIcon(expanded: Boolean) {
 }
 
 @Composable
-private fun AnimatedRefreshIcon(refreshAngle: Float) {
-    val rotation by animateFloatAsState(
-        targetValue = refreshAngle,
-        animationSpec = tween(500)
-    )
+private fun AnimatedRefreshIcon(onRefreshClick: () -> Unit) {
+    var refreshAngle by remember { mutableStateOf(0f) }
 
-    val ration = -abs((rotation % 361) - 180f) / 180f + 2f
-    val defaultSize = 24
+    IconButton(onClick = {
+        refreshAngle += 360f
+        onRefreshClick.invoke()
+    }) {
+        val rotation by animateFloatAsState(
+            targetValue = refreshAngle,
+            animationSpec = tween(500)
+        )
 
-    Icon(
-        imageVector = Icons.Default.Refresh,
-        contentDescription = "Refresh",
-        modifier = Modifier
-            .rotate(rotation)
-            .size((ration * defaultSize).dp),
-        tint = MaterialTheme.colors.onPrimarySurface,
-    )
+        val ratio = -abs((rotation % 361) - 180f) / 180f + 2f
+        val defaultSize = 24
+
+        Icon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = "Refresh",
+            modifier = Modifier
+                .rotate(rotation)
+                .size((ratio * defaultSize).dp),
+            tint = MaterialTheme.colors.onPrimarySurface,
+        )
+    }
 }
