@@ -23,7 +23,7 @@ private val logger = KotlinLogging.logger { }
 
 @Module
 @InstallIn(SingletonComponent::class)
-class WebModule {
+object WebModule {
 
     @Singleton
     @Provides
@@ -35,9 +35,7 @@ class WebModule {
 
         val client = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor { logger.info { it } }
-                .apply {
-                    level = HttpLoggingInterceptor.Level.BASIC
-                })
+                .apply { level = HttpLoggingInterceptor.Level.BASIC })
             .build()
 
         return Retrofit.Builder()
